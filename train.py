@@ -113,6 +113,7 @@ def run_episode(hp, algorithm,agent,act_rmp_correct, move_rmp_correct,PASS_COUNT
             hornet_skill1 = True
         last_hornet_y = hornet_y
 
+        # determine the action for this episode?
         move, action = agent.sample(stations, soul, hornet_x, hornet_y, player_x, hornet_skill1)
 
         
@@ -132,7 +133,7 @@ def run_episode(hp, algorithm,agent,act_rmp_correct, move_rmp_correct,PASS_COUNT
         # get reward
         move_reward = Tool.Helper.move_judge(self_hp, next_self_hp, player_x, next_player_x, hornet_x, next_hornet_x, move, hornet_skill1)
         # print(move_reward)
-        act_reward, done = Tool.Helper.action_judge(boss_hp_value, next_boss_hp_value,self_hp, next_self_hp, next_player_x, next_hornet_x,next_hornet_x, action, hornet_skill1)
+        act_reward, done = Tool.Helper.action_judge(boss_hp_value, next_boss_hp_value,self_hp, next_self_hp, next_player_x, next_hornet_x,next_hornet_y, action, hornet_skill1)
             # print(reward)
         # print( action_name[action], ", ", move_name[d], ", ", reward)
         
@@ -189,15 +190,16 @@ def run_episode(hp, algorithm,agent,act_rmp_correct, move_rmp_correct,PASS_COUNT
             # print("action learning")
             batch_station,batch_actions,batch_reward,batch_next_station,batch_done = act_rmp_correct.sample(BATCH_SIZE)
             algorithm.act_learn(batch_station,batch_actions,batch_reward,batch_next_station,batch_done)
-    # if (len(move_rmp_wrong) > MEMORY_WARMUP_SIZE):
-    #     # print("move learning")
-    #     batch_station,batch_actions,batch_reward,batch_next_station,batch_done = move_rmp_wrong.sample(1)
-    #     algorithm.move_learn(batch_station,batch_actions,batch_reward,batch_next_station,batch_done)   
+        
+        # if (len(move_rmp_wrong) > MEMORY_WARMUP_SIZE):
+        #     # print("move learning")
+        #     batch_station,batch_actions,batch_reward,batch_next_station,batch_done = move_rmp_wrong.sample(1)
+        #     algorithm.move_learn(batch_station,batch_actions,batch_reward,batch_next_station,batch_done)   
 
-    # if (len(act_rmp_wrong) > MEMORY_WARMUP_SIZE):
-    #     # print("action learning")
-    #     batch_station,batch_actions,batch_reward,batch_next_station,batch_done = act_rmp_wrong.sample(1)
-    #     algorithm.act_learn(batch_station,batch_actions,batch_reward,batch_next_station,batch_done)
+        # if (len(act_rmp_wrong) > MEMORY_WARMUP_SIZE):
+        #     # print("action learning")
+        #     batch_station,batch_actions,batch_reward,batch_next_station,batch_done = act_rmp_wrong.sample(1)
+        #     algorithm.act_learn(batch_station,batch_actions,batch_reward,batch_next_station,batch_done)
 
     return total_reward, step, PASS_COUNT, self_hp
 
@@ -215,7 +217,7 @@ if __name__ == '__main__':
     act_rmp_correct = ReplayMemory(MEMORY_SIZE, file_name='./act_memory')         # experience pool
     move_rmp_correct = ReplayMemory(MEMORY_SIZE,file_name='./move_memory')         # experience pool
     
-    # new model, if exit save file, load it
+    # new model, if exist save file, load it
     model = Model(INPUT_SHAPE, ACTION_DIM)  
 
     # Hp counter

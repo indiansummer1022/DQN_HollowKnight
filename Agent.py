@@ -1,18 +1,45 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import tensorflow as tf
-
+from Tool.Actions import Actions, Directions
 class Agent:
     def __init__(self,act_dim,algorithm,e_greed=0.1,e_greed_decrement=0):
         self.act_dim = act_dim
         self.algorithm = algorithm
         self.e_greed = e_greed
         self.e_greed_decrement = e_greed_decrement
+        self.Qvalues = {}
+        self.QstateList = []
+    
+    def getQvalue(self, state, action):
+        if (state, action) in self.Qvalues:
+            return self.Qvalues[(state, action)]
+        else:
+            return 0.0
 
+    def getLegalActions(self, state):
+        return (Actions, Directions)
 
+    def computeValueFromQValues(self, state):
+        if len(self.getLegalActions(state)) == 0:
+            return None
+        else:
+            return sorted([(self.getQValue(state, action), action) for action in self.getLegalActions(state)], key = lambda x: x[0], reverse=True)[0][1]
+
+    def computeActionFromQValues(self, state):
+        if len(self.getLegalActions(state)) == 0:
+            return None
+        else:
+            return sorted([(self.getQValue(state, action), action) for action in self.getLegalActions(state)], key = lambda x: x[0], reverse=True)[0][1]      
+    
     def sample(self, station, soul, hornet_x, hornet_y, player_x, hornet_skill1):
         
-        pred_move, pred_act = self.algorithm.model.predict(station)
+        state = station
+        #state = (abs(hornet_x - player_x)+hornet_y, hornet_skill1)  # state = (manhattan_distance, skill)
+        print('current state:', state)
+
+        
+        pred_move, pred_act = self.algorithm.model.predict(station) # TODO: use q-learning instead of DQN?
         # print(pred_move)
         # print(self.e_greed)
         pred_move = pred_move.numpy()

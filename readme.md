@@ -1,3 +1,11 @@
+# DEADLINE: 
+Presentation: 6/7
+Report Submission: 6/9
+
+# PLAN:
+- 自己糊一个Q-learing（可能糊不出来），和原先的DQN比较从而得出 QL can benefit from DL 的结论?
+
+------------------------------------------------------------
 # Readme
 > I am keeping upgrading this, so the code may change everyday.
 
